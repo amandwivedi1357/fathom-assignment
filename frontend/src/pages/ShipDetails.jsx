@@ -29,8 +29,7 @@ const ShipDetails = () => {
   useEffect(() => {
     const fetchShipDetails = async () => {
       try {
-        // For demo, we'll use mock data
-        // In a real app, this would be: const data = await getShipDetails(id);
+       
         const data = getMockShipDetails(id);
         setShip(data);
       } catch (err) {
@@ -88,7 +87,7 @@ const ShipDetails = () => {
       </button>
       
       {/* Ship header */}
-      <div className="mb-8 rounded-lg bg-gradient-to-r from-marine-dark to-marine-medium p-6 text-white">
+      <div className="mb-8 rounded-lg bg-gradient-to-r from-[#4567b7] to-[#5a7fc3] p-6 text-white">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center">
             <Ship size={40} className="mr-4 text-marine-pale" />
