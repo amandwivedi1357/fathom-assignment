@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ShipDetails from './pages/ShipDetails';
+import SearchShips from './pages/SearchShips';
 import Layout from './components/Layout';
 
 const ProtectedRoute = ({ children }) => {
@@ -21,20 +22,19 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      
       <Route path="/" element={
         <ProtectedRoute>
-          <Layout>
-            <Dashboard />
-          </Layout>
+          <Layout />
         </ProtectedRoute>
-      } />
-      <Route path="/ships/:id" element={
-        <ProtectedRoute>
-          <Layout>
-            <ShipDetails />
-          </Layout>
-        </ProtectedRoute>
-      } />
+      }>
+        <Route index element={<Dashboard />} />
+        <Route path="search" element={<SearchShips />} />
+        <Route path="ships/:id" element={<ShipDetails />} />
+      </Route>
+      
+      {/* Fallback route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

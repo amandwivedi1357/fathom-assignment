@@ -77,7 +77,6 @@ const ShipDetails = () => {
 
   return (
     <div className="container mx-auto">
-      {/* Back button */}
       <button
         onClick={() => navigate(-1)}
         className="mb-6 inline-flex items-center text-sm font-medium text-marine-medium hover:text-marine-dark"
@@ -86,7 +85,6 @@ const ShipDetails = () => {
         Back to Dashboard
       </button>
       
-      {/* Ship header */}
       <div className="mb-8 rounded-lg bg-gradient-to-r from-[#4567b7] to-[#5a7fc3] p-6 text-white">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center">
@@ -103,7 +101,6 @@ const ShipDetails = () => {
         </div>
       </div>
       
-      {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
           {tabs.map((tab) => (
@@ -122,11 +119,9 @@ const ShipDetails = () => {
         </nav>
       </div>
       
-      {/* Tab content */}
       <div className="mb-12">
         {activeTab === 'details' && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Left column - Basic details */}
             <div className="col-span-2 space-y-6">
               <div className="rounded-lg bg-white p-6 shadow-md">
                 <h2 className="mb-4 text-lg font-semibold text-gray-800">Vessel Information</h2>
@@ -226,7 +221,6 @@ const ShipDetails = () => {
               </div>
             </div>
             
-            {/* Right column - Location & Stats */}
             <div className="space-y-6">
               <div className="rounded-lg bg-white p-6 shadow-md">
                 <h2 className="mb-4 text-lg font-semibold text-gray-800">Current Position</h2>
@@ -382,18 +376,7 @@ const ShipDetails = () => {
         )}
       </div>
       
-      {/* Call to action */}
-      <div className="mb-12 rounded-lg bg-gray-50 p-6">
-        <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">Need more detailed information?</h3>
-            <p className="text-gray-600">Get full vessel history, inspection records, and owner details.</p>
-          </div>
-          <button className="rounded-lg bg-marine-medium px-4 py-2 font-medium text-white hover:bg-marine-dark">
-            View Full Report
-          </button>
-        </div>
-      </div>
+     
     </div>
   );
 };

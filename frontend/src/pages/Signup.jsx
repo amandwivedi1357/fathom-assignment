@@ -18,7 +18,6 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     
-    // Validate passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -39,37 +38,6 @@ const Signup = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // For demo purposes, let's add a mock signup function
-  const handleMockSignup = async (e) => {
-    e.preventDefault();
-    
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock successful signup
-      localStorage.setItem('token', 'mock_jwt_token');
-      
-      // Update auth context with mock data
-      signup(name, email, password)
-        .then(() => {
-          navigate('/');
-        })
-        .catch(err => {
-          setError(err.message || 'Failed to create account');
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }, 1000);
   };
 
   return (
@@ -172,14 +140,6 @@ const Signup = () => {
               {isLoading ? 'Creating account...' : 'Sign up'}
             </button>
 
-            {/* Mock signup button for demo purposes */}
-            <button
-              type="button"
-              onClick={handleMockSignup}
-              className="group relative flex w-full justify-center rounded-md bg-gray-100 px-3 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-200"
-            >
-              Demo Signup (No Backend)
-            </button>
           </div>
         </form>
         

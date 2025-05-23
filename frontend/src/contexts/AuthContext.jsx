@@ -12,14 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check if there's a token in localStorage
     const token = localStorage.getItem('token');
     
     if (token) {
       try {
         const decoded = jwtDecode(token);
         
-        // Check if token is expired
         const currentTime = Date.now() / 1000;
         if (decoded.exp < currentTime) {
           localStorage.removeItem('token');
@@ -44,7 +42,6 @@ export const AuthProvider = ({ children }) => {
       const data = await apiLogin(email, password);
       localStorage.setItem('token', data.token);
       
-      // Use the user data from the response instead of decoding the token
       setUser({ 
         id: data.user.id, 
         email: data.user.email, 
