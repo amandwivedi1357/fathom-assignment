@@ -63,10 +63,6 @@ export const AuthProvider = ({ children }) => {
     
     try {
       const data = await apiSignup(name, email, password);
-      localStorage.setItem('token', data.token);
-      
-      const decoded = jwtDecode(data.token);
-      setUser({ id: decoded.id, email: decoded.email, name: decoded.name });
       
       return { success: true };
     } catch (err) {

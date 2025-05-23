@@ -29,14 +29,21 @@ const Signup = () => {
       const result = await signup(name, email, password);
       
       if (result.success) {
-        navigate('/');
+        navigate('/login', { 
+          state: { 
+            message: 'Registration successful! Please log in to continue.',
+            email: email
+          } 
+        });
       } else {
         setError(result.error || 'Failed to create account');
       }
     } catch (err) {
       setError(err.message || 'An error occurred during signup');
     } finally {
-      setIsLoading(false);
+      if (!error) {
+        setIsLoading(false);
+      }
     }
   };
 
