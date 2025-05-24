@@ -1,68 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter, ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
-
-const mockShips = [
-  {
-    id: '1',
-    name: 'Pacific Voyager',
-    imo: '9876543',
-    type: 'Container Ship',
-    flag: 'Panama',
-    yearBuilt: 2015,
-    grossTonnage: 85600,
-    status: 'Underway',
-    destination: 'Singapore',
-    eta: '2023-06-15',
-  },
-  {
-    id: '2',
-    name: 'Atlantic Explorer',
-    imo: '8765432',
-    type: 'Bulk Carrier',
-    flag: 'Liberia',
-    yearBuilt: 2018,
-    grossTonnage: 92450,
-    status: 'At Anchor',
-    destination: 'Rotterdam',
-    eta: '2023-06-20',
-  },
-  {
-    id: '3',
-    name: 'Indian Ocean Queen',
-    imo: '7654321',
-    type: 'Crude Oil Tanker',
-    flag: 'Marshall Islands',
-    yearBuilt: 2016,
-    grossTonnage: 156000,
-    status: 'Underway',
-    destination: 'Shanghai',
-    eta: '2023-06-25',
-  },
-  {
-    id: '4',
-    name: 'Arctic Trader',
-    imo: '6543210',
-    type: 'LNG Carrier',
-    flag: 'Bahamas',
-    yearBuilt: 2020,
-    grossTonnage: 112000,
-    status: 'In Port',
-    destination: 'Oslo',
-    eta: '2023-06-18',
-  },
-  {
-    id: '5',
-    name: 'Mediterranean Star',
-    imo: '5432109',
-    type: 'Passenger Ship',
-    flag: 'Italy',
-    yearBuilt: 2019,
-    grossTonnage: 185000,
-    status: 'Underway',
-    destination: 'Barcelona',
-    eta: '2023-06-22',
-  },
-];
+import axios from 'axios';
 
 const statusColors = {
   'Underway': 'bg-green-100 text-green-800',
@@ -72,8 +10,12 @@ const statusColors = {
   'Restricted Maneuverability': 'bg-purple-100 text-purple-800',
 };
 
+const API_URL =  'http://localhost:5000/api';
+
 const SearchShips = () => {
   const [ships, setShips] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     type: '',
@@ -84,9 +26,40 @@ const SearchShips = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
+  const fetchShips = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params = new URLSearchParams();
+      
+      if (searchTerm) params.append('search', searchTerm);
+      if (filters.type) params.append('type', filters.type);
+      if (filters.status) params.append('status', filters.status);
+      if (filters.flag) params.append('flag', filters.flag);
+      if (sortConfig.key) {
+        params.append('sortBy', sortConfig.key);
+        params.append('order', sortConfig.direction);
+      }
+      
+      const response = await axios.get(`${API_URL}/ships?${params.toString()}`);
+      setShips(response.data);
+    } catch (err) {
+      console.error('Error fetching ships:', err);
+      setError('Failed to load ships. Please try again later.');
+      setShips([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setShips(mockShips);
-  }, []);
+    const timer = setTimeout(() => {
+      fetchShips();
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, filters, sortConfig]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -100,21 +73,21 @@ const SearchShips = () => {
     }));
   };
 
-  const resetFilters = () => {
+  const handleSort = (key) => {
+    setSortConfig(prevConfig => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
     setFilters({
       type: '',
       status: '',
       flag: '',
     });
-    setSearchTerm('');
-  };
-
-  const requestSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
+    setSortConfig({ key: null, direction: 'asc' });
   };
 
   const getSortIcon = (key) => {
@@ -182,8 +155,7 @@ const SearchShips = () => {
             />
           </div>
           
-          <div className="flex space-x-3
-          ">
+          <div className="flex space-x-3">
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
@@ -194,7 +166,7 @@ const SearchShips = () => {
             </button>
             <button
               type="button"
-              onClick={resetFilters}
+              onClick={clearFilters}
               className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
               Reset
@@ -265,7 +237,7 @@ const SearchShips = () => {
                     <th 
                       scope="col" 
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-                      onClick={() => requestSort('name')}
+                      onClick={() => handleSort('name')}
                     >
                       <div className="flex items-center">
                         Name
@@ -275,7 +247,7 @@ const SearchShips = () => {
                     <th 
                       scope="col" 
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-                      onClick={() => requestSort('imo')}
+                      onClick={() => handleSort('imo')}
                     >
                       <div className="flex items-center">
                         IMO
@@ -285,7 +257,7 @@ const SearchShips = () => {
                     <th 
                       scope="col" 
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-                      onClick={() => requestSort('type')}
+                      onClick={() => handleSort('type')}
                     >
                       <div className="flex items-center">
                         Type
@@ -295,7 +267,7 @@ const SearchShips = () => {
                     <th 
                       scope="col" 
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 cursor-pointer"
-                      onClick={() => requestSort('flag')}
+                      onClick={() => handleSort('flag')}
                     >
                       <div className="flex items-center">
                         Flag

@@ -11,11 +11,10 @@ import {
   Calendar, 
   Loader
 } from 'lucide-react';
-import { getMockShips } from '../services/shipService';
+import { getShips } from '../services/shipService';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [ships, setShips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +23,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchShips = async () => {
       try {
-        const data = getMockShips();
+        const data = await getShips();
         setShips(data);
       } catch (err) {
         setError('Failed to fetch ship data');
@@ -42,8 +41,8 @@ const Dashboard = () => {
     setError(null);
     
     try {
-      const mockShips = getMockShips();
-      const results = mockShips.filter(ship => 
+      const data = getShips();
+      const results = data.filter(ship => 
         ship.name.toLowerCase().includes(query.toLowerCase()) || 
         ship.imo.includes(query) ||
         ship.type.toLowerCase().includes(query.toLowerCase())
@@ -143,7 +142,7 @@ const Dashboard = () => {
           <p className="text-gray-500">Try a different search term or check back later.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 overflow-y-auto max-h-[calc(100vh-300px)]">
           {displayedShips.map((ship) => (
             <ShipCard key={ship.id} ship={ship} />
           ))}

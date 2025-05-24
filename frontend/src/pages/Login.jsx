@@ -14,22 +14,18 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check for success message and email in location state
   useEffect(() => {
     if (location.state?.message) {
       setSuccessMessage(location.state.message);
       
-      // Clear the message after 5 seconds
       const timer = setTimeout(() => {
         setSuccessMessage('');
-        // Clear the location state to prevent showing the message again on refresh
         window.history.replaceState({}, '');
       }, 5000);
       
       return () => clearTimeout(timer);
     }
     
-    // Pre-fill email if provided in location state
     if (location.state?.email) {
       setEmail(location.state.email);
     }
