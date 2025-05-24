@@ -23,8 +23,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchShips = async () => {
       try {
-        const data = await getShips();
-        setShips(data);
+        const response = await getShips();
+        setShips(response.data); 
       } catch (err) {
         setError('Failed to fetch ship data');
         console.error(err);
@@ -37,12 +37,17 @@ const Dashboard = () => {
   }, []);
 
   const handleSearch = async (query) => {
+    if (!query.trim()) {
+      setSearchResults(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     
     try {
-      const data = getShips();
-      const results = data.filter(ship => 
+      const response = await getShips();
+      const results = response.data.filter(ship => 
         ship.name.toLowerCase().includes(query.toLowerCase()) || 
         ship.imo.includes(query) ||
         ship.type.toLowerCase().includes(query.toLowerCase())
@@ -50,8 +55,8 @@ const Dashboard = () => {
       
       setSearchResults(results);
     } catch (err) {
-      setError('Search failed. Please try again.');
-      console.error(err);
+      console.error('Search error:', err);
+      setError('Failed to perform search');
     } finally {
       setIsLoading(false);
     }

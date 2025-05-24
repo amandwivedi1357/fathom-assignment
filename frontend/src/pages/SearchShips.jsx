@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter, ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const statusColors = {
   'Underway': 'bg-green-100 text-green-800',
@@ -10,10 +11,9 @@ const statusColors = {
   'Restricted Maneuverability': 'bg-purple-100 text-purple-800',
 };
 
-const API_URL =  'http://localhost:5000/api';
 
 const SearchShips = () => {
-  const [ships, setShips] = useState([]);
+  const [ships, setShips] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,7 +43,7 @@ const SearchShips = () => {
       }
       
       const response = await axios.get(`${API_URL}/ships?${params.toString()}`);
-      setShips(response.data);
+      setShips(response.data.data || []); 
     } catch (err) {
       console.error('Error fetching ships:', err);
       setError('Failed to load ships. Please try again later.');
@@ -99,8 +99,9 @@ const SearchShips = () => {
       : <ChevronDown className="ml-1 h-4 w-4 inline" />;
   };
 
-  let sortedShips = [...ships];
-  if (sortConfig.key) {
+    let sortedShips = Array.isArray(ships) ? [...ships] : []; 
+    
+  if (sortConfig.key && sortedShips.length > 0) {
     sortedShips.sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) {
         return sortConfig.direction === 'asc' ? -1 : 1;

@@ -29,12 +29,16 @@ const ShipDetails = () => {
   useEffect(() => {
     const fetchShipDetails = async () => {
       try {
-       
-        const data = getShipDetails(id);
-        setShip(data);
+        setIsLoading(true);
+        const data = await getShipDetails(id);
+        if (data) {
+          setShip(data);
+        } else {
+          setError('Ship not found');
+        }
       } catch (err) {
-        setError('Failed to fetch ship details');
-        console.error(err);
+        console.error('Error fetching ship details:', err);
+        setError('Failed to fetch ship details. Please try again later.');
       } finally {
         setIsLoading(false);
       }
@@ -151,7 +155,7 @@ const ShipDetails = () => {
                     <Scale size={18} className="mr-3 text-marine-medium" />
                     <div>
                       <p className="text-xs text-gray-500">Gross Tonnage</p>
-                      <p className="font-medium">{ship.grossTonnage.toLocaleString()}</p>
+                      <p className="font-medium">{ship.grossTonnage ? ship.grossTonnage.toLocaleString() : 'N/A'}</p>
                     </div>
                   </div>
                 </div>
@@ -231,7 +235,9 @@ const ShipDetails = () => {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500">Last Updated:</span>
                   <span className="font-medium">
-                    {new Date(ship.location.lastUpdated).toLocaleString()}
+                    {ship?.location?.lastUpdated 
+                      ? new Date(ship.location.lastUpdated).toLocaleString() 
+                      : 'N/A'}
                   </span>
                 </div>
               </div>

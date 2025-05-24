@@ -1,7 +1,11 @@
 import express from 'express';
 import { getShips } from '../controllers/shipController.js';
-
+import { searchShips } from '../controllers/shipController.js';
+import { getShipDetails } from '../controllers/shipController.js';
+import { getRecentShips } from '../controllers/shipController.js';
 const router = express.Router();
 router.get('/', getShips);
-
+router.get('/search', searchShips);
+router.get('/:id', getShipDetails);
+router.get('/recent', getRecentShips);
 export default router;
