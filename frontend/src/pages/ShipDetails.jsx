@@ -16,7 +16,7 @@ import {
   Loader,
   AlertTriangle
 } from 'lucide-react';
-import { getMockShipDetails } from '../services/shipService';
+import { getShipDetails } from '../services/shipService';
 
 const ShipDetails = () => {
   const { id } = useParams();
@@ -30,7 +30,7 @@ const ShipDetails = () => {
     const fetchShipDetails = async () => {
       try {
        
-        const data = getMockShipDetails(id);
+        const data = getShipDetails(id);
         setShip(data);
       } catch (err) {
         setError('Failed to fetch ship details');
